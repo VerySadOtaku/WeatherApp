@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="columns is-mobile is-centered">
+            <div class="column is-half">
+                    <p class="title">
+                    Check weather in your desired city
+                    </p>
+                    <p class="subtitle">
+                    Simply enter the city name
+                    </p>
+            </div>
+        </div>
+    </div>
+  </section>
+<section class="section">
+    <div class="container">
+        <div class="columns is-mobile is-centered">
+            <div class="column is-half">
+                <form action="{{ url_for('add_city') }}" method="POST">
+                    <input class="input" type="text" placeholder="Text input" name="city">
+                    <button class="button is-link" name="add">Submit</button>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                {% set message_class = 'is-success' %}
+
+                                {% if category == 'error' %}
+                                    {% set message_class = 'is-danger' %}
+                                {% endif %}
+                                <div class="notification {{ message_class }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" >
+    <div class="container">
+        <div class="columns is-mobile is-centered" style="flex-wrap: wrap">
+            {% for weather in weather_info %}
+            <div class="column is-one-third" >
+                <div class="box">
+                    <article class="media">
+                        <div class="media-left">
+                            <figure class="image is-50x50">
+                                <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="Icon">
+                            </figure>
+                        </div>
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    <span class="title"> {{ weather.city}}</span>
+                                </p>
+                                <br>
+                                <span class="subtitle"> {{ weather.temperature }}&#8451;</span>
+                                <br> {{ weather.description }}
+                            </div>
+                            <a href="{{url_for('delete_city', name=(weather.city))}}"><button class="button is-link" name="delete">Delete</button></a>
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
